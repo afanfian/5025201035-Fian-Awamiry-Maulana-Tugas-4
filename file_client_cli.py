@@ -95,7 +95,7 @@ def delete_file(filename=""):
         return False
     
 if __name__=='__main__':
-    os.chdir("./upload_file")
+    os.chdir("./new_files")
     files_to_upload = ["donalbebek.jpg", "pokijan.jpg", "rfc2616.pdf"]
     # Upload files
     for filename in files_to_upload:
