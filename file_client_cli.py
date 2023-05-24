@@ -102,5 +102,5 @@ if __name__=='__main__':
         upload_file(filename)
     # Delete files
     for filename in files_to_upload:
-       delete_file(filename)
+        delete_file(filename)
 
