@@ -31,10 +31,10 @@ def send_command(command_str=""):
                 break
         # at this point, data_received (string) will contain all data coming from the socket
         # to be able to use the data_received as a dict, need to load it using json.loads()
-        hasil = json.loads(data_received)
+        result = json.loads(data_received)
         logging.warning("data received from server:")
-        print(hasil)
-        return hasil
+        print(result)
+        return result
     except:
         logging.warning("error during data receiving")
         return False
@@ -42,10 +42,10 @@ def send_command(command_str=""):
 
 def remote_list():
     command_str=f"LIST"
-    hasil = send_command(command_str)
-    if (hasil['status']=='OK'):
+    result = send_command(command_str)
+    if (result['status']=='OK'):
         print("daftar file : ")
-        for nmfile in hasil['data']:
+        for nmfile in result['data']:
             print(f"- {nmfile}")
         return True
     else:
@@ -54,11 +54,11 @@ def remote_list():
 
 def remote_get(filename=""):
     command_str=f"GET {filename}"
-    hasil = send_command(command_str)
-    if (hasil['status']=='OK'):
+    result = send_command(command_str)
+    if (result['status']=='OK'):
         #proses file dalam bentuk base64 ke bentuk bytes
-        namafile= hasil['data_namafile']
-        isifile = base64.b64decode(hasil['data_file'])
+        namafile= result['data_namafile']
+        isifile = base64.b64decode(result['data_file'])
         fp = open(namafile,'wb+')
         fp.write(isifile)
         fp.close()
@@ -71,8 +71,8 @@ def upload_file(filename=""):
     with open(filename, 'rb') as fp:
         files = base64.b64encode(fp.read()).decode('utf-8')
     command_str = f"POST {filename} {files}\n"
-    hasil = send_command(command_str)
-    if hasil['status'] == 'OK':
+    result = send_command(command_str)
+    if result['status'] == 'OK':
         with open('record.txt', 'a') as logfile:
             logfile.write(f"{time.ctime()} : {filename} File Berhasil Diupload\n")
         print(f"File {filename} File Berhasil Diupload")
@@ -84,8 +84,8 @@ def upload_file(filename=""):
 
 def delete_file(filename=""):
     command_str = f"DELETE {filename}\n"
-    hasil = send_command(command_str)
-    if hasil['status'] == 'OK':
+    result = send_command(command_str)
+    if result['status'] == 'OK':
         with open('record.txt', 'a') as logfile:
             logfile.write(f"{time.ctime()} : {filename} File Berhasil Didelete\n")
         print(f"File {filename} File Berhasil Didelete")
