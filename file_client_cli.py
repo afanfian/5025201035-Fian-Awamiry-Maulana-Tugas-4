@@ -2,8 +2,11 @@ import socket
 import json
 import base64
 import logging
+# Import tambahan 
+import time
+import os
 
-server_address=('0.0.0.0',7777)
+server_address = ('127.0.0.0', 1035)
 
 def send_command(command_str=""):
     global server_address
@@ -30,6 +33,7 @@ def send_command(command_str=""):
         # to be able to use the data_received as a dict, need to load it using json.loads()
         hasil = json.loads(data_received)
         logging.warning("data received from server:")
+        print(hasil)
         return hasil
     except:
         logging.warning("error during data receiving")
@@ -63,9 +67,40 @@ def remote_get(filename=""):
         print("Gagal")
         return False
 
+def upload_file(filename=""):
+    with open(filename, 'rb') as fp:
+        files = base64.b64encode(fp.read()).decode('utf-8')
+    command_str = f"POST {filename} {files}\n"
+    hasil = send_command(command_str)
+    if hasil['status'] == 'OK':
+        with open('record.txt', 'a') as logfile:
+            logfile.write(f"{time.ctime()} : {filename} File Berhasil Diupload\n")
+        print(f"File {filename} File Berhasil Diupload")
+        return True
+    else:
+        print("Gagal")
+        return False
 
+
+def delete_file(filename=""):
+    command_str = f"DELETE {filename}\n"
+    hasil = send_command(command_str)
+    if hasil['status'] == 'OK':
+        with open('record.txt', 'a') as logfile:
+            logfile.write(f"{time.ctime()} : {filename} File Berhasil Didelete\n")
+        print(f"File {filename} File Berhasil Didelete")
+        return True
+    else:
+        print("Gagal")
+        return False
+    
 if __name__=='__main__':
-    server_address=('172.16.16.101',6666)
-    remote_list()
-    remote_get('donalbebek.jpg')
+    os.chdir("./upload_file")
+    files_to_upload = ["donalbebek.jpg", "pokijan.jpg", "rfc2616.pdf"]
+    # Upload files
+    for filename in files_to_upload:
+        upload_file(filename)
+    # Delete files
+    for filename in files_to_upload:
+        delete_file(filename)
 
