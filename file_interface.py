@@ -25,7 +25,7 @@ class FileInterface:
         except Exception as e:
             return dict(status='ERROR',data=str(e))
 
-    def upload_file(self,params=[]):
+    def post(self,params=[]):
         try:
             filename = params[0]
             if (filename == ''):
@@ -38,7 +38,7 @@ class FileInterface:
         except Exception as e:
             return dict(status='ERROR',data=str(e))
         
-    def delete_file(self,params=[]):
+    def delete(self,params=[]):
         try:
             filename = params[0]
             if (filename == ''):
